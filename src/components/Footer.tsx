@@ -5,7 +5,6 @@ export default function Footer() {
   return (
     <footer className="footer">
       <div className="container">
-        {/* Partners */}
         <div className="footer-partners">
           <span className="footer-partners-label">In collaboration</span>
           <div className="partner-logos">

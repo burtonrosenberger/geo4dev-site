@@ -8,3 +8,19 @@ INTAKE_REPO = "g4d-nlt-cega-3ie/geo4dev-intake"
 
 # Secret (Cloudflare Pages dashboard): GITHUB_TOKEN = fine-grained token,
 # Issues: write on geo4dev-intake only.
+
+# Per-IP rate limiting for POST /api/signup. The endpoint is fail-closed: while
+# this binding is absent AND TURNSTILE_SECRET is unset, every request is refused
+# with 503 (no silently-open intake). This block is intentionally left COMMENTED
+# OUT: a [[kv_namespaces]] entry with a blank/placeholder id must never be
+# deployed (it would either fail the deploy or bind a broken namespace). To
+# enable rate limiting, provision the namespace, paste the printed id, and
+# uncomment:
+#   npx wrangler kv namespace create geo4dev-signup-ratelimit
+# For local/preview (`wrangler pages dev`) also create + wire the preview ns:
+#   npx wrangler kv namespace create geo4dev-signup-ratelimit --preview
+#
+# [[kv_namespaces]]
+# binding = "RATE_LIMIT"
+# id = "<paste the namespace id printed by the create command>"
+# preview_id = "<paste the --preview namespace id>"

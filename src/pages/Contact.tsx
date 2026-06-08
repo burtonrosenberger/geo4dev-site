@@ -10,8 +10,17 @@ function typeFor(interest: string): 'contact' | 'submission' {
   return interest.startsWith('contribute') ? 'submission' : 'contact'
 }
 
+interface TurnstileApi {
+  render: (
+    el: HTMLElement,
+    options: { sitekey: string; callback: (token: string) => void },
+  ) => void
+}
+
 declare global {
-  interface Window { turnstile?: any }
+  interface Window {
+    turnstile?: TurnstileApi
+  }
 }
 
 export default function Contact() {
