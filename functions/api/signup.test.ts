@@ -219,6 +219,16 @@ describe('onRequestPost internal-host link rejection (IPv6 and DNS forms)', () =
     ['http://metadata.google.internal/'], // cloud metadata DNS
     ['http://foo.internal/'], // internal DNS suffix
     ['http://100.64.0.1/'], // CGNAT
+    ['http://metadata.google.internal./'], // trailing-dot FQDN cloud metadata (NO_PROXY-style bypass)
+    ['http://localhost./'], // trailing-dot FQDN loopback
+    ['http://foo.internal./'], // trailing-dot FQDN internal DNS suffix
+    ['http://metadata.google.internal../'], // double-dot FQDN cloud metadata (WHATWG preserves multiple trailing dots)
+    ['http://metadata.google.internal.../'], // triple-dot FQDN cloud metadata
+    ['http://metadata.google.internal.%2e/'], // percent-encoded dot decodes to a second trailing dot
+    ['http://169.254.169.254../'], // multi-dot cloud metadata IPv4
+    ['http://localhost../'], // multi-dot FQDN loopback
+    ['http://foo.internal../'], // multi-dot FQDN internal DNS suffix
+    ['http://./'], // bare-dot host normalizes to empty and is rejected
   ])('accepts the submission but omits the Link line for internal link %s', async (link) => {
     const fetchMock = okGithub()
     vi.stubGlobal('fetch', fetchMock)

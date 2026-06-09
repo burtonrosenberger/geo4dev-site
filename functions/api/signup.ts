@@ -101,7 +101,17 @@ function isInternalIPv4(host: string): boolean {
 }
 
 function isInternalHost(host: string): boolean {
-  const h = host.toLowerCase()
+  let h = host.toLowerCase()
+  // Strip ALL trailing dots: a fully-qualified `metadata.google.internal.` is
+  // the same host as `metadata.google.internal`, but WHATWG URL preserves
+  // trailing dots verbatim (and even synthesizes extra ones from `%2e`), so
+  // without this the equality/suffix checks below are bypassed by any
+  // trailing-dot form -- `metadata.google.internal.`, `...internal..`, etc.
+  // (same class as the axios NO_PROXY trailing-dot SSRF bypass). One `.slice`
+  // is not enough: multiple trailing dots survive it, so normalize them all.
+  h = h.replace(/\.+$/, '')
+  // A bare-dot / empty host is not a resolvable public host; treat as unsafe.
+  if (h === '') return true
 
   // IPv6 literal: URL.hostname keeps the surrounding brackets.
   if (h.startsWith('[') && h.endsWith(']')) {
