@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom'
 import PageHeader from '../components/PageHeader'
 
 export default function Privacy() {
@@ -46,7 +47,7 @@ export default function Privacy() {
           <h3>Your choices</h3>
           <p>
             You can ask us what we hold about you, to correct it, or to delete it. Contact us
-            through the form on the <a href="/contact">Contact</a> page and we'll act on your
+            through the form on the <Link to="/contact">Contact</Link> page and we'll act on your
             request.
           </p>
         </div>

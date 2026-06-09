@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import newsData from '../../content/news.json'
-import { safeUrl } from '../lib/safeUrl'
+import { safeUrl, safeHostname } from '../lib/safeUrl'
 import PageHeader from '../components/PageHeader'
 
 interface Source { id: string; name: string; site: string | null; searchMore?: string }
@@ -54,7 +54,7 @@ export default function News() {
               </div>
               <h3>{it.title}</h3>
               <p>{it.description}</p>
-              <span className="news-link">{new URL(it.url).hostname.replace('www.', '')} ↗</span>
+              <span className="news-link">{safeHostname(it.url)} ↗</span>
             </a>
           ))}
         </div>

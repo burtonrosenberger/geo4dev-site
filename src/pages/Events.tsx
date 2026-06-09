@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom'
 import eventsData from '../../content/events.json'
 import { GITHUB_OPEN_DATA } from '../lib/assets'
-import { safeUrl } from '../lib/safeUrl'
+import { safeUrl, safeHostname } from '../lib/safeUrl'
 import PageHeader from '../components/PageHeader'
 
 interface Ev { year: string; date: string; title: string; host: string; blurb: string; url: string }
@@ -48,7 +48,7 @@ export default function Events() {
                 <p>{e.blurb}</p>
                 <div className="event-meta">
                   <span className="event-host">{e.host}</span>
-                  <span className="event-link">{new URL(e.url).hostname.replace('www.', '')} ↗</span>
+                  <span className="event-link">{safeHostname(e.url)} ↗</span>
                 </div>
               </div>
             </a>

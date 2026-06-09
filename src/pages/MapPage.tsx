@@ -70,7 +70,6 @@ export default function MapPage() {
   return (
     <main className="map-page">
       <div className="map-shell" style={{ gridTemplateColumns: cols }}>
-        {/* LEFT */}
         {leftOpen ? (
           <aside className="map-pane left">
             <div className="pane-bar">
@@ -135,7 +134,6 @@ export default function MapPage() {
           </aside>
         )}
 
-        {/* CENTER */}
         <div className="map-center">
           <GeoMap
             points={geoResults}
@@ -151,7 +149,6 @@ export default function MapPage() {
           />
         </div>
 
-        {/* RIGHT */}
         {rightOpen ? (
           <aside className="map-pane right">
             <div className="pane-bar">

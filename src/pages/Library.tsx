@@ -11,14 +11,15 @@ export default function Library() {
   const [categories, setCategories] = useState<string[]>(
     params.get('cat') ? [params.get('cat')!] : [],
   )
-  const [contentTypes, setContentTypes] = useState<string[]>([])
+  const [contentTypes, setContentTypes] = useState<string[]>(params.getAll('ct'))
 
   useEffect(() => {
     const next = new URLSearchParams()
     if (q) next.set('q', q)
     categories.forEach((c) => next.append('cat', c))
+    contentTypes.forEach((c) => next.append('ct', c))
     setParams(next, { replace: true })
-  }, [q, categories, setParams])
+  }, [q, categories, contentTypes, setParams])
 
   const results = useMemo(
     () => search({ q, categories, contentTypes }),

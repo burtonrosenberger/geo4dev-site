@@ -12,6 +12,7 @@ import type { MapRef } from 'react-map-gl/maplibre'
 import type { StyleSpecification } from 'maplibre-gl'
 import { MapboxOverlay } from '@deck.gl/mapbox'
 import { ScatterplotLayer } from '@deck.gl/layers'
+import type { Layer } from '@deck.gl/core'
 import 'maplibre-gl/dist/maplibre-gl.css'
 import type { Dataset } from '../lib/types'
 
@@ -31,7 +32,7 @@ export const BASEMAPS: Record<string, { label: string; style: StyleSpecification
   satellite: { label: 'Satellite', style: raster(['https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}'], 'Imagery © Esri, Maxar, Earthstar Geographics') },
 }
 
-function DeckOverlay(props: { layers: any[] }) {
+function DeckOverlay(props: { layers: Layer[] }) {
   const overlay = useControl(() => new MapboxOverlay({ interleaved: false, layers: props.layers }))
   overlay.setProps({ layers: props.layers })
   return null
@@ -69,6 +70,13 @@ export default function GeoMap({
   const mapRef = useRef<MapRef>(null)
   const [loaded, setLoaded] = useState(false)
 
+  // Hold the latest onSelect in a ref so an inline parent callback does not
+  // force the layers useMemo (and the whole deck.gl layer) to rebuild every render.
+  const onSelectRef = useRef(onSelect)
+  useEffect(() => {
+    onSelectRef.current = onSelect
+  }, [onSelect])
+
   const center = initialCenter ?? (points.length === 1 ? [points[0].lng, points[0].lat] : [12, 18])
   const zoom = initialZoom ?? (points.length === 1 ? 4 : 1.3)
 
@@ -94,7 +102,7 @@ export default function GeoMap({
         getLineColor: (d) => (selectedId && d.id === selectedId ? [255, 255, 255, 255] : [255, 255, 255, 200]),
         lineWidthUnits: 'pixels',
         getLineWidth: outlineWidth,
-        onClick: (info) => onSelect?.((info.object as GeoDataset) ?? null),
+        onClick: (info) => onSelectRef.current?.((info.object as GeoDataset) ?? null),
         updateTriggers: {
           getRadius: [pointSize, selectedId],
           getLineWidth: outlineWidth,
@@ -103,7 +111,7 @@ export default function GeoMap({
         },
       }),
     ]
-  }, [points, showPoints, pointSize, outlineWidth, selectedId, onSelect])
+  }, [points, showPoints, pointSize, outlineWidth, selectedId])
 
   return (
     <div className="geomap" style={{ height }}>
